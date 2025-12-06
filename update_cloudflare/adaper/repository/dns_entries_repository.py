@@ -32,7 +32,7 @@ class DNSRecordsRepository:
         conn.close()
         self.logger.info("Database initialized and ensured dns_records table exists.")
         
-    def list_records_by(self, zone_id: str, dns_record_id: str, record_name: str) -> List[dict] | None:
+    def list_by(self, zone_id: str, dns_record_id: str, record_name: str) -> List[dict] | None:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute('''
@@ -59,7 +59,7 @@ class DNSRecordsRepository:
             self.logger.debug("No DNS records found.")
             return None
         
-    def save_record(self, zone_id: str, dns_record_id: str, record_name: str, last_ip: str) -> None:
+    def save(self, zone_id: str, dns_record_id: str, record_name: str, last_ip: str) -> None:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute('''

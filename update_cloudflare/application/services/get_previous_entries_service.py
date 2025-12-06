@@ -10,9 +10,9 @@ class GetPreviousEntriesService:
     def execute(self, zone_id: str, dns_record_id: str, record_name: str) -> list[DNSRecord] | None:
         
         self.logger.debug(f"Retrieving last register entry for zone_id: {zone_id}, dns_record_id: {dns_record_id}, record_name: {record_name}")
-        record = self.dnsrecords_repository.list_records_by(zone_id, dns_record_id, record_name)
-        self.logger.debug(f"Last register entry retrieved: {record}")
+        records = self.dnsrecords_repository.list_by(zone_id, dns_record_id, record_name)
+        self.logger.debug(f"Last register entry retrieved: {records}")
         
-        if record is None:
+        if records is None:
             return None
-        return DNSRecord.from_dict(record)
+        return [DNSRecord.from_dict(record) for record in records]
