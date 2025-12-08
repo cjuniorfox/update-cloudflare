@@ -38,7 +38,7 @@ let
     ${pkgs.base64}/bin/base64 -w 0 <<< '${cfg.apiToken}' | ${pkgs.coreutils}/bin/tr -d '\n' > $out
   '';
 
-  configFile = pkgs.writeText "update-cloudflare-config.ini" ''
+  configFile = pkgs.writeText "update-cloudflare/config.ini" ''
     [cloudflare]
     api_token = ${builtins.readFile encodedApiToken}
     zone_id = ${cfg.zoneId}
@@ -125,6 +125,7 @@ in
   };
 
   config = mkIf cfg.enable {
+    environment.etc."update-cloudflare/config.ini".source = configFile;
     systemd.services.update-cloudflare = {
       description = "Update Cloudflare DNS record for ${cfg.dnsRecord}";
       after = [ "network-online.target" ];
@@ -132,8 +133,6 @@ in
       unitConfig.PartOf = [ "multi-user.target" ];
       serviceConfig = {
         Type = "simple";
-        ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p /etc/update-cloudflare";
-        ExecStartPre = "!${pkgs.coreutils}/bin/cp ${configFile} /etc/update-cloudflare/config.ini";
         ExecStart = "${monitorScript}";
         Restart = "always";
         RestartSec = 10;
