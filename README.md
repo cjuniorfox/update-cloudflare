@@ -79,36 +79,17 @@ The module creates a background service that:
 
 #### How to Use the NixOS Module
 
-**1. Add the module to your NixOS flake.nix:**
+**1. Configure the service in your `configuration.nix`:**
 
 ```nix
-{
-  description = "Your NixOS Configuration";
 
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    update-cloudflare = {
-      url = "github:cjuniorfox/update-cloudflare";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-  };
+imports = [ 
+  (import (builtins.fetchurl {
+    url = "https://github.com/cjuniorfox/update-cloudflare/blob/v0.1.0/nixos/update-cloudflare.nix";
+    sha256 = "0nzw1f8zbxnjwxprimwyjcf2xycw0pqdr643b6m9gjqa71jln2as";
+    }))
+];
 
-  outputs = { self, nixpkgs, update-cloudflare }:
-    {
-      nixosConfigurations.your-hostname = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./configuration.nix
-          update-cloudflare.nixosModules.default
-        ];
-      };
-    };
-}
-```
-
-**2. Configure the service in your `configuration.nix`:**
-
-```nix
 services.update-cloudflare = {
   enable = true;
   interface = "eth0";                    # Network interface to monitor
@@ -120,7 +101,7 @@ services.update-cloudflare = {
 };
 ```
 
-**3. Rebuild and switch:**
+**2. Rebuild and switch:**
 
 ```bash
 sudo nixos-rebuild switch
