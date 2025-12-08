@@ -38,7 +38,7 @@ class UpdateIPv6DNSUC:
         new_ips = self._new_ips(stable_public_ips, previous_entries)
         
         if not new_ips or len(new_ips) == 0:
-            self.logger.debug("No new stable public IPv6 addresses found. Exiting without updating DNS record.")
+            self.logger.info("No new stable public IPv6 addresses found. Exiting without updating DNS record.")
             return
         
         registered_dns_record = self.update_dns_record_service.execute(
@@ -50,7 +50,7 @@ class UpdateIPv6DNSUC:
         
         self.save_registered_dns_record_service.execute(registered_dns_record)
         
-        self.logger.debug(f"The record {registered_dns_record} have been processed and DNS record updated accordingly.")
+        self.logger.info(f"The record {registered_dns_record} have been processed and DNS record updated accordingly.")
         
     def _new_ips(self, stable_public_ips : list[IPv6Entry], previous_entries : list[DNSRecord]) -> list[IPv6Address]:
         if previous_entries:
