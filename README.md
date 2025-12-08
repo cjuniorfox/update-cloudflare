@@ -85,8 +85,8 @@ The module creates a background service that:
 
 imports = [ 
   (import (builtins.fetchurl {
-    url = "https://github.com/cjuniorfox/update-cloudflare/blob/v0.1.0/nixos/update-cloudflare.nix";
-    sha256 = "0nzw1f8zbxnjwxprimwyjcf2xycw0pqdr643b6m9gjqa71jln2as";
+    url = "https://raw.githubusercontent.com/cjuniorfox/update-cloudflare/refs/heads/nixos/nixos/update-cloudflare.nix";
+    sha256 = "12kxjpddin0pvz08na7i2v9c0hqbrssnplvynn69lhm4wxf3iix8";
     }))
 ];
 
