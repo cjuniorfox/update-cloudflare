@@ -23,6 +23,6 @@ def main(
         db_path=db_path
     )
     logging.getLogger().setLevel(params.log_level.upper())
-    logging.info(f"Starting update with interface: {params.ifname} for domain record: {params.record_name} with DNS record ID: {params.dns_record_id} and comment: {params.comment}" )
+    logging.info(f'Starting update with interface: "{params.ifname}" for domain record: "{params.record_name}" with DNS record ID: "{params.dns_record_id}" and comment: "{params.comment}"' )
     app = Application(params)
     app.run()
