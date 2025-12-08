@@ -51,7 +51,7 @@ let
   monitorScript = pkgs.writeShellScript "update-cloudflare-monitor.sh" ''
     #!${pkgs.bash}/bin/bash
     CONFIG_FILE="/etc/update-cloudflare/config.ini"
-    PATH="${lib.makeBinPath [ pkgs.gawk pkgs.base64 pkgs.iproute2 ]}:$PATH"
+    PATH="${lib.makeBinPath [ pkgs.gawk pkgs.coreutils-full pkgs.iproute2 ]}:$PATH"
 
     ini_get() {
       local section=$1 key=$2 file=$3
