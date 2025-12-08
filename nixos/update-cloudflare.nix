@@ -35,7 +35,7 @@ let
   };
 
   encodedApiToken = pkgs.runCommand "encoded-api-token" {} ''
-    ${pkgs.base64}/bin/base64 -w 0 <<< '${cfg.apiToken}' | ${pkgs.coreutils}/bin/tr -d '\n' > $out
+    ${pkgs.coreutils-full}/bin/base64 -w 0 <<< '${cfg.apiToken}' | ${pkgs.coreutils}/bin/tr -d '\n' > $out
   '';
 
   configFile = pkgs.writeText "update-cloudflare/config.ini" ''
