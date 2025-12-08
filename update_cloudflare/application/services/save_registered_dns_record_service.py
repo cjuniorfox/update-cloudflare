@@ -13,6 +13,6 @@ class SaveRegisteredDNSRecordService:
         self.dnsrecords_repository.save(zone_id=dns_record.zone_id,
                                         dns_record_id=dns_record.dns_record_id,
                                         record_name=dns_record.record_name,
-                                        last_ip=str(dns_record.ip))
+                                        ip=str(dns_record.ip))
         
         self.logger.debug("Registered DNS record saved successfully.")
