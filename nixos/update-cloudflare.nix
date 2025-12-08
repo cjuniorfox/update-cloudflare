@@ -48,6 +48,7 @@ let
     dns_record = ${cfg.dnsRecord}
     interface = ${cfg.interface}
     log_level = ${cfg.logLevel}
+    comment = ${cfg.comment or "Updated by NixOS update-cloudflare service"}
   '';
 
   monitorScript = pkgs.writeShellScript "update-cloudflare-monitor.sh" ''
@@ -73,6 +74,7 @@ let
     ZONE_ID="$(ini_get cloudflare zone_id "$CONFIG_FILE")"
     DNS_RECORD_ID="$(ini_get cloudflare dns_record_id "$CONFIG_FILE")"
     LOG_LEVEL="$(ini_get cloudflare log_level "$CONFIG_FILE")"
+    COMMENT="$(ini_get cloudflare comment "$CONFIG_FILE")"
 
     API_TOKEN_RAW="$(ini_get cloudflare api_token "$CONFIG_FILE")"
     API_TOKEN="$( base64 -d <<< "$API_TOKEN_RAW" )"
@@ -84,6 +86,7 @@ let
         --zone_id "$ZONE_ID" \
         --dns_record_id "$DNS_RECORD_ID" \
         --bearer_token "$API_TOKEN" \
+        --comment "$COMMENT" \
         --log-level "$LOG_LEVEL"
       
       sleep 300  # Wait for 5 minutes before the next update
@@ -111,6 +114,11 @@ in
     apiToken = mkOption {
       type = types.str;
       description = "Cloudflare API token with permissions to edit DNS records.";
+    };
+    comment = mkOption {
+      type = types.str;
+      description = "Optional comment to add to the DNS record update.";
+      default = null;
     };
     zoneId = mkOption {
       type = types.str;
