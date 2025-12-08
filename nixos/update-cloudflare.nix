@@ -30,7 +30,9 @@ let
       wheel
     ];
 
-    propagatedBuildInputs = [ ];
+    propagatedBuildInputs = with python3.pkgs; [
+      requests
+    ];
     doCheck = false;
   };
 
