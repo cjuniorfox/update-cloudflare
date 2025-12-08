@@ -58,8 +58,8 @@ let
     ini_get() {
       local section=$1 key=$2 file=$3
       awk -F'=' -v s="[$section]" -v k="$key" '
-        $0 ~ /^\s*\[/ { in = ($1$2 == s) }                # track section
-        in && $1 ~ "^\\s*"k"\\s*$" {
+        $0 ~ /^\s*\[/ { found = ($1$2 == s) }                # track section
+        found && $1 ~ "^\\s*"k"\\s*$" {
           val = $2
           gsub(/^[ \t"]+|[ \t"]+$/,"",val)               # trim spaces/quotes
           print val
@@ -80,10 +80,10 @@ let
     while true; do
       ${updateCloudflare}/bin/update-cloudflare \
         "$DNS_RECORD" \
-        --interface "$INTERFACE" \
-        --zone-id "$ZONE_ID" \
-        --dns-record-id "$DNS_RECORD_ID" \
-        --api-token "$API_TOKEN" \
+        --ifname "$INTERFACE" \
+        --zone_id "$ZONE_ID" \
+        --dns_record_id "$DNS_RECORD_ID" \
+        --bearer_token "$API_TOKEN" \
         --log-level "$LOG_LEVEL"
       
       sleep 300  # Wait for 5 minutes before the next update
