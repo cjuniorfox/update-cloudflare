@@ -20,7 +20,7 @@ let
       owner = "cjuniorfox";
       repo = "update-cloudflare";
       rev = "v${version}";
-      hash = "sha256-Lq9oVvH8JfgMYudQlT2zdcMAoz1Hcv7gYeAPVu71z/k";
+      sha256 = "0aglkyqnnzpc8hal8rhxzlzyxd023m2sixhbfpm1y3v1rfc4sgkq";
     };
 
     format = "pyproject";
