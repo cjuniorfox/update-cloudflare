@@ -80,7 +80,7 @@ let
       API_TOKEN_RAW="$(ini_get cloudflare api_token "$CONFIG_FILE")"
     fi
 
-    API_TOKEN="$( base64 -d <<< "$API_TOKEN_RAW" )"
+    API_TOKEN="$( base64 -d <<< "$API_TOKEN_RAW" || echo "$API_TOKEN_RAW" )"
 
     while true; do
       ${updateCloudflare}/bin/update-cloudflare \
@@ -116,7 +116,7 @@ in
     };
     apiTokenFile = mkOption {
       type = types.path;
-      description = "Path to a file containing the Cloudflare API token. This is an alternative to providing the token directly in the configuration.";
+      description = "Path to a file containing the Cloudflare API token. The API token can be encoded in base64 or stored as plain text. If not provided.";
       default = null;
     };
     comment = mkOption {
