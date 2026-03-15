@@ -43,6 +43,7 @@ let
   configFile = pkgs.writeText "update-cloudflare/config.ini" ''
     [cloudflare]
     api_token = ${builtins.readFile encodedApiToken}
+    api_token_file = ${cfg.apiTokenFile or ""}
     zone_id = ${cfg.zoneId}
     dns_record_id = ${cfg.dnsRecordId}
     dns_record = ${cfg.dnsRecord}
@@ -59,10 +60,10 @@ let
     ini_get() {
       local section=$1 key=$2 file=$3
       awk -F'=' -v s="[$section]" -v k="$key" '
-        $0 ~ /^\s*\[/ { found = ($1$2 == s) }                # track section
+        $0 ~ /^\s*\[/ { found = ($1$2 == s) }
         found && $1 ~ "^\\s*"k"\\s*$" {
           val = $2
-          gsub(/^[ \t"]+|[ \t"]+$/,"",val)               # trim spaces/quotes
+          gsub(/^[ \t"]+|[ \t"]+$/,"",val)  # trim spaces/quotes
           print val
           exit
         }
@@ -76,7 +77,14 @@ let
     LOG_LEVEL="$(ini_get cloudflare log_level "$CONFIG_FILE")"
     COMMENT="$(ini_get cloudflare comment "$CONFIG_FILE")"
 
-    API_TOKEN_RAW="$(ini_get cloudflare api_token "$CONFIG_FILE")"
+    API_TOKEN_FILE="$(ini_get cloudflare api_token_file "$CONFIG_FILE")"
+    if [[ -n "$API_TOKEN_FILE" && -f "$API_TOKEN_FILE" ]]; then
+      API_TOKEN_RAW="$(< "$API_TOKEN_FILE")"
+    else
+      echo "Using API token from configuration file."
+      API_TOKEN_RAW="$(ini_get cloudflare api_token "$CONFIG_FILE")"
+    fi
+
     API_TOKEN="$( base64 -d <<< "$API_TOKEN_RAW" )"
 
     while true; do
@@ -110,6 +118,11 @@ in
       ];
       default = "INFO";
       description = "Logging level. One of: DEBUG, INFO, WARNING, ERROR, CRITICAL.";
+    };
+    apiTokenFile = mkOption {
+      type = types.path;
+      description = "Path to a file containing the Cloudflare API token. This is an alternative to providing the token directly in the configuration.";
+      default = null;
     };
     apiToken = mkOption {
       type = types.str;
