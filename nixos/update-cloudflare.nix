@@ -36,14 +36,9 @@ let
     doCheck = false;
   };
 
-  encodedApiToken = pkgs.runCommand "encoded-api-token" {} ''
-    ${pkgs.coreutils-full}/bin/base64 -w 0 <<< '${cfg.apiToken}' | ${pkgs.coreutils}/bin/tr -d '\n' > $out
-  '';
-
   configFile = pkgs.writeText "update-cloudflare/config.ini" ''
     [cloudflare]
-    api_token = ${builtins.readFile encodedApiToken}
-    api_token_file = ${cfg.apiTokenFile or ""}
+    api_token_file = ${cfg.apiTokenFile}
     zone_id = ${cfg.zoneId}
     dns_record_id = ${cfg.dnsRecordId}
     dns_record = ${cfg.dnsRecord}
@@ -123,10 +118,6 @@ in
       type = types.path;
       description = "Path to a file containing the Cloudflare API token. This is an alternative to providing the token directly in the configuration.";
       default = null;
-    };
-    apiToken = mkOption {
-      type = types.str;
-      description = "Cloudflare API token with permissions to edit DNS records.";
     };
     comment = mkOption {
       type = types.str;
